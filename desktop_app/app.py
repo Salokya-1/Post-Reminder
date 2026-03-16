@@ -57,6 +57,11 @@ def load_events() -> list[Event]:
     return []
 
 
+# Initialize runtime data for both local execution and Gunicorn deploys.
+ensure_dirs()
+seed_csv_if_missing()
+
+
 def find_due_reminders(events: Iterable[Event], today: date) -> list[Event]:
     due: list[Event] = []
     for event in events:

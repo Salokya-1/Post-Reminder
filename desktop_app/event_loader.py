@@ -76,12 +76,16 @@ def load_events_from_xlsx(path: Path) -> list[Event]:
         notes_idx = _find_col(headers, ("notes", "caption", "description", "details", "content"))
 
         for row in rows[1:]:
-            event_date = _parse_date(row[date_idx] if date_idx is not None and date_idx < len(row) else None)
+            if date_idx is not None and date_idx < len(row):
+                event_date = _parse_date(row[date_idx])
+                detected_date_idx = date_idx
+            else:
+                event_date, detected_date_idx = _first_date_cell(row)
 
             if name_idx is not None and name_idx < len(row):
                 name = str(row[name_idx] or "").strip()
             else:
-                name = _first_text_cell(row, skip_index=date_idx)
+                name = _first_text_cell(row, skip_index=detected_date_idx)
 
             notes = ""
             if notes_idx is not None and notes_idx < len(row):
@@ -115,6 +119,14 @@ def _first_text_cell(row: tuple[object, ...], skip_index: int | None) -> str:
             if parsed is None:
                 return text
     return ""
+
+
+def _first_date_cell(row: tuple[object, ...]) -> tuple[date | None, int | None]:
+    for idx, value in enumerate(row):
+        parsed = _parse_date(value)
+        if parsed is not None:
+            return parsed, idx
+    return None, None
 
 
 def _dedupe(events: list[Event]) -> list[Event]:
