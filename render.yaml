@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: post-reminder-desktop
-    env: python
-    buildCommand: pip install -r desktop_app/requirements-web.txt
-    startCommand: gunicorn --chdir desktop_app app:app --bind 0.0.0.0:$PORT
-    autoDeploy: true

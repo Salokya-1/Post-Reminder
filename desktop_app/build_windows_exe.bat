@@ -9,7 +9,7 @@ call venv\Scripts\activate
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 
-pyinstaller --noconfirm --onefile --name PostReminderDesktop --add-data "templates;templates" --add-data "static;static" run_desktop.py
+pyinstaller --noconfirm --onefile --name PostReminderDesktop run_desktop.py
 
 echo.
 echo Build complete. EXE location:
