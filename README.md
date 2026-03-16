@@ -68,7 +68,7 @@ A new desktop version is included in `desktop_app/`.
 
 1. Open terminal in `desktop_app`.
 2. Install requirements:
-   - `python -m pip install -r requirements.txt`
+   - `python -m pip install -r requirements-web.txt`
 3. Start app:
    - `python run_desktop.py`
 4. Browser opens at `http://127.0.0.1:5000`.
@@ -82,6 +82,11 @@ From a Windows machine:
    - `build_windows_exe.bat`
 3. Output EXE:
    - `desktop_app/dist/PostReminderDesktop.exe`
+
+Note:
+
+- `requirements-web.txt` is for web/runtime deploys (Render, Linux CI).
+- `requirements.txt` includes `pyinstaller` for Windows EXE packaging.
 
 ## Desktop Main Files
 
