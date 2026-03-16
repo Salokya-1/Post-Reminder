@@ -46,10 +46,14 @@ def seed_csv_if_missing() -> None:
 
 def load_events() -> list[Event]:
     if XLSX_PATH.exists():
-        return load_events_from_xlsx(XLSX_PATH)
+        events = load_events_from_xlsx(XLSX_PATH)
+        if events:
+            return events
 
     if ROOT_XLSX_PATH.exists():
-        return load_events_from_xlsx(ROOT_XLSX_PATH)
+        events = load_events_from_xlsx(ROOT_XLSX_PATH)
+        if events:
+            return events
 
     if CSV_PATH.exists():
         return load_events_from_csv(CSV_PATH)
@@ -116,7 +120,11 @@ def convert() -> str:
         flash(f"Conversion failed: {exc}", "error")
         return redirect(url_for("convert"))
 
-    flash("Conversion complete. Dashboard updated.", "success")
+    parsed_events = load_events_from_csv(CSV_PATH)
+    if parsed_events:
+        flash(f"Conversion complete. Parsed {len(parsed_events)} events.", "success")
+    else:
+        flash("Upload saved, but no events were parsed. Check date/header format in the file.", "error")
     return redirect(url_for("dashboard"))
 
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from datetime import date, datetime
 from pathlib import Path
@@ -32,11 +33,44 @@ def _parse_date(value: object) -> date | None:
     if not text:
         return None
 
-    for fmt in ("%Y-%m-%d", "%d-%m-%Y", "%d/%m/%Y", "%b %d, %Y", "%B %d, %Y"):
-        try:
-            return datetime.strptime(text, fmt).date()
-        except ValueError:
-            continue
+    # Normalize free-form date text from marketing calendars.
+    text = text.replace("\n", " ").strip()
+    text = re.sub(r"\s+", " ", text)
+    text = re.sub(r"(\d)(st|nd|rd|th)\b", r"\1", text, flags=re.IGNORECASE)
+
+    # Drop trailing day names or extra notes after separators.
+    for separator in ("|", " - ", " (", " ["):
+        if separator in text:
+            text = text.split(separator, 1)[0].strip()
+
+    candidates = [
+        text,
+        text.replace("/", "-"),
+        text.replace(".", "-"),
+        text.replace(",", ", "),
+    ]
+
+    formats = (
+        "%Y-%m-%d",
+        "%d-%m-%Y",
+        "%m-%d-%Y",
+        "%d-%m-%y",
+        "%d/%m/%Y",
+        "%m/%d/%Y",
+        "%d %b %Y",
+        "%d %B %Y",
+        "%b %d, %Y",
+        "%B %d, %Y",
+        "%b %d,%Y",
+        "%B %d,%Y",
+    )
+
+    for candidate in candidates:
+        for fmt in formats:
+            try:
+                return datetime.strptime(candidate, fmt).date()
+            except ValueError:
+                continue
 
     return None
 
