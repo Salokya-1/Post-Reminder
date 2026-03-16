@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Convert XLSX to CSV</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+<body>
+  <main class="container narrow">
+    <header class="hero">
+      <h1>XLSX to CSV Converter</h1>
+      <p>Upload your calendar workbook and refresh dashboard data.</p>
+      <a class="btn btn-alt" href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flash-list">
+          {% for category, message in messages %}
+            <li class="flash {{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form class="form" method="post" enctype="multipart/form-data">
+      <label for="xlsx_file">Select XLSX file</label>
+      <input id="xlsx_file" type="file" name="xlsx_file" accept=".xlsx" required />
+      <button class="btn" type="submit">Convert and Update</button>
+    </form>
+  </main>
+</body>
+</html>

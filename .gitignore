@@ -1,0 +1,17 @@
+*.iml
+.gradle/
+local.properties
+.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+
+# Desktop Python app
+.desktop-app-venv/
+venv/
+__pycache__/
+*.pyc
+desktop_app/build/
+desktop_app/dist/
